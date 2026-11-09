@@ -8,7 +8,7 @@ The intended application resource group is `briefcase-sync-development`, without
 
 | Item | Name / location | Result |
 | --- | --- | --- |
-| Azure SQL database | `caseworksdevsql001/briefcase-sync-development` in `caseworks-development` | Online; Standard S0, 10 DTUs; application schema not published |
+| Azure SQL database | `caseworksdevsql001/BriefcaseSyncDev` in `caseworks-development` (renamed by the operator from `briefcase-sync-development`) | Online; Standard S0, 10 DTUs; application schema publication still blocked by SQL login access |
 | Key Vault secret | `angdevkeyvault/briefcase-sync-development-sa-username` | Created from verified local SmartAdvocate development settings |
 | Key Vault secret | `angdevkeyvault/briefcase-sync-development-sa-password` | Created from verified local SmartAdvocate development settings |
 | Key Vault secret | `angdevkeyvault/briefcase-sync-development-briefcase-client-id` | Created from verified local BriefCase trial settings |
@@ -21,7 +21,7 @@ The intended application resource group is `briefcase-sync-development`, without
 | Web app-role assignments | Current developer identity | `Sync.Preview` and `Sync.Configure`; View access is included by the application policies |
 | Entra application registration | `Angeion.BriefcaseAiSync-development-deploy` | Client ID `098660c7-9d66-482e-a1b6-10831bdc77c3`; separate deployment identity |
 | Entra enterprise application | Same deployment name | Service principal `b615e122-2b22-4b38-9353-f54eb445a037` |
-| Federated identity credential | `github-development` on deployment registration | GitHub issuer; subject `repo:cbriner-angeiongroup-com/Angeion.BriefcaseAiSync:environment:development`; no deployment client secret |
+| Federated identity credential | `github-development` on deployment registration | GitHub issuer; subject `repo:cbriner-angeiongroup-com@207618167/Angeion.BriefcaseAiSync@1451515948:environment:development`; no deployment client secret |
 | Registry RBAC assignment | Deployment service principal → `caseworksdevacr000` | `AcrPush`, scoped to that registry; assignment `3a9bd8c5-ab53-459a-bd98-c641b73026e2` |
 | Worker container image | `caseworksdevacr000.azurecr.io/briefcase-sync/worker:development-20261109` | Build run `cdd` succeeded |
 | Web container image | `caseworksdevacr000.azurecr.io/briefcase-sync/web:development-20261109` | Build run `cde` succeeded |
@@ -89,3 +89,13 @@ The database resource is Online. Both registry build runs succeeded. The web reg
 `eng/verify.ps1 -SqlIntegration` passed with 141 tests, including the isolated local SQL test. The SQL project, both host publications, all seven Bicep templates, and the deployment-only SQL authorization tool built successfully. This local SQL result does not establish Azure SQL login access; the Azure publication attempt was separately rejected.
 
 Initial deployment keeps `SendingEnabled=false`, `MappingApproved=false`, `RetainersEnabled=false`, eligibility status `0`, and the worker trigger Manual. No vendor writes, cloud sync runs, or case reads were performed by provisioning. App hosting, sign-in, SQL schema connectivity, ingress acceptance, and alert delivery are not yet validated.
+
+## Confirmed database rename and schema-only publication attempt
+
+The operator confirmed `BriefcaseSyncDev` on `caseworksdevsql001` as the target. `BriefcaseAiSyncDev` was not found. Development settings, the deployment-only SQL authorization tool and the publisher SQL database guard now use `BriefcaseSyncDev`; resource-group and managed-identity names remain unchanged.
+
+The SQL project built successfully. Both the current interactive Azure identity and the existing federated deployment identity were rejected by SQL login, before a deployment report or any schema DDL could execute. [Schema-only workflow run](https://github.com/cbriner-angeiongroup-com/Angeion.BriefcaseAiSync/actions/runs/42670246463). No schema changes were applied.
+
+The existing federation credential was updated to match the repository-ID-bearing subject observed in GitHub's issued token. Azure authentication then succeeded; the remaining failure is SQL database access. No additional Azure identity or hosting resources were created during this attempt.
+
+A SQL administrator must run `database/authorize-development-publisher.sql` while connected to `BriefcaseSyncDev`, binding service principal `b615e122-2b22-4b38-9353-f54eb445a037` (`Angeion.BriefcaseAiSync-development-deploy`) as a contained database user with publication rights. The schema-only workflow can then be rerun. It preserves objects, permissions and role memberships outside the SQL project, rejects non-additive changes, and requires a post-publication report with no pending operations. This workflow does not grant runtime permissions or provision hosting.

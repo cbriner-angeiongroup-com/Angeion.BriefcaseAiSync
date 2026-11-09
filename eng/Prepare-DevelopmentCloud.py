@@ -22,6 +22,7 @@ RECEIPT = ROOT / "artifacts/development-deployment/shared-resources.json"
 VAULT = "https://angdevkeyvault.vault.azure.net"
 PREFIX = "briefcase-sync-development"
 GRAPH = "https://graph.microsoft.com/v1.0"
+GITHUB_SUBJECT = "repo:cbriner-angeiongroup-com@207618167/Angeion.BriefcaseAiSync@1451515948:environment:development"
 records = json.loads(RECEIPT.read_text(encoding="utf-8")) if RECEIPT.exists() else []
 tokens = {}
 
@@ -126,10 +127,12 @@ def application(display_name, web=False):
         if not any(item["name"] == "github-development" for item in existing):
             request("POST", url, "https://graph.microsoft.com", {
                 "name": "github-development", "issuer": "https://token.actions.githubusercontent.com",
-                "subject": "repo:cbriner-angeiongroup-com/Angeion.BriefcaseAiSync:environment:development",
+                "subject": GITHUB_SUBJECT,
                 "audiences": ["api://AzureADTokenExchange"]})
             record("FederatedIdentityCredential", "github-development", "created", appId=app["appId"])
         else:
+            if any(item["name"] == "github-development" and item["subject"] != GITHUB_SUBJECT for item in existing):
+                raise CloudError(0, "FEDERATED_SUBJECT_MISMATCH")
             record("FederatedIdentityCredential", "github-development", "reused", appId=app["appId"])
 
 
