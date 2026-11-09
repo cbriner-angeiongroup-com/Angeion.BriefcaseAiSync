@@ -1,0 +1,51 @@
+name: verify
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    services:
+      sql:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          ACCEPT_EULA: Y
+          MSSQL_SA_PASSWORD: Synthetic-CI-Only-Strong-Password-2026!
+        ports: ['1433:1433']
+        options: >-
+          --health-cmd="/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'Synthetic-CI-Only-Strong-Password-2026!' -C -Q 'SELECT 1'"
+          --health-interval=10s --health-timeout=5s --health-retries=20
+    env:
+      BRIEFCASE_TEST_SQL_MASTER: Server=localhost,1433;User Id=sa;Password=Synthetic-CI-Only-Strong-Password-2026!;Encrypt=True;TrustServerCertificate=True;
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.21.0'
+          cache: npm
+          cache-dependency-path: src/BriefcaseSync.Web/package-lock.json
+      - run: npm ci
+        working-directory: src/BriefcaseSync.Web
+      - run: npm run build:css
+        working-directory: src/BriefcaseSync.Web
+      - run: dotnet restore BriefcaseSync.sln --locked-mode
+      - run: dotnet test BriefcaseSync.sln -c Release --no-restore
+      - run: dotnet build database/BriefcaseSync.Database/BriefcaseSync.Database.sqlproj -c Release
+      - run: az bicep build --file infra/main.bicep --outfile /tmp/main.json
+      - run: az bicep build --file infra/database.bicep --outfile /tmp/database.json
+      - run: az bicep build --file infra/bootstrap.bicep --outfile /tmp/bootstrap.json
+      - run: az bicep build --file infra/keyvault-access.bicep --outfile /tmp/keyvault-access.json
+      - run: az bicep build --file infra/web.bicep --outfile /tmp/web.json
+      - run: az bicep build --file infra/development-access.bicep --outfile /tmp/development-access.json
+      - run: az bicep build --file infra/monitoring.bicep --outfile /tmp/monitoring.json
+      - run: dotnet restore eng/AuthorizeDevelopmentSql --locked-mode
+      - run: dotnet build eng/AuthorizeDevelopmentSql -c Release --no-restore
+      - run: npx playwright install --with-deps chromium
+        working-directory: src/BriefcaseSync.Web
+      - run: npm run test:browser
+        working-directory: src/BriefcaseSync.Web
+      - run: docker build -t briefcase-sync:ci .
+      - run: docker build -f Dockerfile.Web -t briefcase-sync-web:ci .

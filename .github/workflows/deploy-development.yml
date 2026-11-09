@@ -1,0 +1,35 @@
+name: deploy-development
+on:
+  workflow_dispatch:
+    inputs:
+      known_proxy_networks:
+        description: 'Approved ingress proxy CIDRs as a JSON array; required for the web host'
+        required: true
+        type: string
+permissions:
+  contents: read
+  id-token: write
+concurrency:
+  group: briefcase-sync-development-deployment
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: development
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - name: Install SQL project publisher
+        run: dotnet tool install --global Microsoft.SqlPackage
+      - name: Deploy pinned development images with sending disabled
+        shell: pwsh
+        env:
+          KNOWN_PROXY_NETWORKS: ${{ inputs.known_proxy_networks }}
+        run: ./eng/Deploy-Development.ps1 -KnownProxyNetworks @(ConvertFrom-Json $env:KNOWN_PROXY_NETWORKS)

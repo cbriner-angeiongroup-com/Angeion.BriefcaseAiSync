@@ -1,0 +1,45 @@
+{
+  "inspectedOn": "2026-10-28",
+  "sources": [
+    {
+      "name": "Angeion_Lead_API_Specification.pdf",
+      "source": "C:\\Users\\cameron\\source\\repos\\Angeion.CaseConnector.BriefCaseAi\\Angeion_Lead_API_Specification.pdf",
+      "sha256": "4c677877ad869ff850f22498bd439e4b85da202556ef97ec771c1bd9b7727995"
+    },
+    {
+      "name": "Farrar and Ball UDF Creation and Field Mapping.xlsx",
+      "source": "C:\\Users\\cameron\\Downloads\\Farrar and Ball UDF Creation and Field Mapping.xlsx",
+      "sha256": "00756bc865f878aeee3f9430691da30a2ab97d6c0fc81644bd097f1badf2670d"
+    },
+    {
+      "name": "IntakeMapper.cs",
+      "source": "C:\\Users\\cameron\\source\\repos\\Angeion.CaseConnector.BriefCaseAi\\src\\CaseWorks.CaseConnector.Connector.BriefCaseAi\\IntakeMapper.cs",
+      "sha256": "c100d28f3ab8a29de23f85be11466f92e200317be426b94ecab4b889f9aaf432"
+    },
+    {
+      "name": "IntakeValidator.cs",
+      "source": "C:\\Users\\cameron\\source\\repos\\Angeion.CaseConnector.BriefCaseAi\\src\\CaseWorks.CaseConnector.Connector.BriefCaseAi\\IntakeValidator.cs",
+      "sha256": "dc9a76cce104e04ae81968d247a99bf2963b3b00464c3ea6fd79c03b1bc63fcd"
+    },
+    {
+      "name": "IntakeRequest.cs",
+      "source": "C:\\Users\\cameron\\source\\repos\\Angeion.CaseConnector.BriefCaseAi\\src\\CaseWorks.CaseConnector.Connector.BriefCaseAi\\IntakeRequest.cs",
+      "sha256": "a4310a32ad8d9403f9fa4f884f212fa31c4db4394c34ab5e7edd44497b28d04a"
+    },
+    {
+      "name": "BriefCaseAiApiClient.cs",
+      "source": "C:\\Users\\cameron\\source\\repos\\Angeion.CaseConnector.BriefCaseAi\\src\\CaseWorks.CaseConnector.Connector.BriefCaseAi\\BriefCaseAiApiClient.cs",
+      "sha256": "f6c78a9df5803f0a9dd3ea236b36439e62fab7c20fc1208e9dca0d1282bca52a"
+    },
+    {
+      "name": "DocumentService.cs",
+      "source": "C:\\Users\\cameron\\source\\repos\\Angeion.CaseConnector.BriefCaseAi\\src\\CaseWorks.CaseConnector.Connector.BriefCaseAi\\DocumentService.cs",
+      "sha256": "3eb31d27c66fca7a9bf84c913772db19ec3c126dbf13add26dc3b001e7d614ef"
+    },
+    {
+      "name": "farrar-ball.intake-profile.example.json",
+      "source": "C:\\Users\\cameron\\source\\repos\\Angeion.CaseConnector.BriefCaseAi\\config\\farrar-ball.intake-profile.example.json",
+      "sha256": "bbfa6442fb63bd602428aa2c17c0e505cc8c8a4c752f11837a14b8885ef6f64b"
+    }
+  ]
+}

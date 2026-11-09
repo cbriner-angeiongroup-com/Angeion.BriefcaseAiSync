@@ -1,0 +1,9 @@
+@page "/runs"
+@attribute [Authorize(Policy = "View")]
+@inject OperationsService Service
+<PageTitle>Sync history · Briefcase Sync</PageTitle>
+<div class="page-header"><div><p class="eyebrow mb-2">Execution history</p><h1>Sync history</h1><p class="page-description">Recent runs, their outcomes, and the configuration version used for each execution.</p></div><button class="btn-secondary" @onclick="Load" disabled="@loading"><Icon Name="refresh" />Refresh history</button></div>
+<Feedback Message="@error" Error />
+@if (loading) { <Loading /> }
+else if (data != null) { <section class="panel overflow-hidden"><div class="p-5"><h2>Latest 30 executions</h2><p class="mt-2 text-xs text-muted-foreground">Schedule skips and overlapping pulses do not create a run.</p></div><RunTable Runs="@data.Runs" /></section><div class="mt-5 grid gap-4 md:grid-cols-2">@foreach (var run in data.Runs.Take(4)) { <article class="panel p-5"><div class="flex justify-between gap-3"><h2 class="font-mono text-xs">@run.Id.ToString("N")[..8]</h2><StatusBadge Text="@run.Outcome" /></div><dl class="mt-4 grid grid-cols-2 gap-3 text-xs"><dt class="text-muted-foreground">Configuration</dt><dd>Version @run.ConfigurationVersion</dd><dt class="text-muted-foreground">Duration</dt><dd>@(run.FinishedAtUtc is {} end ? $"{(end - run.StartedAtUtc).TotalSeconds:0}s" : "In progress")</dd><dt class="text-muted-foreground">Failed cases</dt><dd>@run.Failed</dd><dt class="text-muted-foreground">Cases needing review</dt><dd>@run.Attention</dd></dl></article> }</div> }
+@code { private OperationsDashboard? data; private bool loading = true; private string? error; protected override Task OnInitializedAsync() => Load(); private async Task Load() { loading = true; try { data = await Service.Dashboard(); error = null; } catch (UiOperationException e) { error = e.Message; } finally { loading = false; } } }

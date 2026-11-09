@@ -1,0 +1,38 @@
+@page "/"
+@attribute [Authorize(Policy = "View")]
+@inject OperationsService Service
+<PageTitle>Overview · Briefcase Sync</PageTitle>
+<div class="page-header"><div><p class="eyebrow mb-2">Integration overview</p><h1>Sync overview</h1><p class="page-description">Monitor intake and signed-retainer delivery from SmartAdvocate to BriefCase AI.</p></div><a href="/preview" class="btn-primary"><Icon Name="eye" />Preview a case</a></div>
+<Feedback Message="@error" Error />
+@if (loading) { <Loading /> }
+else if (data != null)
+{
+    <div class="panel mb-6 flex flex-wrap items-center gap-5 p-5">
+        <div class="flex items-center gap-3"><span class="metric-icon bg-accent text-primary font-semibold text-xs">SA</span><div><p class="text-xs font-semibold">SmartAdvocate</p><p class="mt-1 text-[11px] text-muted-foreground">Cases &amp; documents</p></div></div>
+        <div class="flex min-w-24 flex-1 items-center gap-3 text-muted-foreground"><div class="h-px flex-1 bg-border"></div><span class="whitespace-nowrap text-[10px]">ONE-WAY SYNC</span><Icon Name="arrow" /><div class="h-px flex-1 bg-border"></div></div>
+        <div class="flex items-center gap-3"><span class="metric-icon bg-secondary text-foreground font-semibold text-xs">BC</span><div><p class="text-xs font-semibold">BriefCase AI</p><p class="mt-1 text-[11px] text-muted-foreground">Intakes &amp; signed retainers</p></div></div>
+        <div class="ml-auto border-l border-border pl-5"><StatusBadge Text="@(settings?.Settings.SendingEnabled == true ? "Running" : "Paused")" /><p class="mt-1 text-[10px] text-muted-foreground">@(settings?.Settings.SendingEnabled == true ? "Delivery enabled" : "Remote delivery paused")</p></div>
+    </div>
+    <div class="mb-7 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        @foreach (var metric in Metrics)
+        {
+            <div class="panel p-5"><div class="flex items-center justify-between"><p class="text-xs font-medium text-muted-foreground">@metric.Label</p><span class="metric-icon @metric.Tone"><Icon Name="@metric.Icon" /></span></div><p class="mt-4 text-[30px] font-semibold leading-none tracking-tight">@metric.Value</p><p class="mt-2 text-[11px] text-muted-foreground">@metric.Note</p></div>
+        }
+    </div>
+    <div class="mb-7 grid gap-5 xl:grid-cols-[1fr_310px]">
+        <section class="panel overflow-hidden"><div class="flex items-center justify-between p-5"><div><h2>Recent sync runs</h2><p class="mt-1 text-[11px] text-muted-foreground">Durable execution outcomes</p></div><a href="/runs" class="text-xs font-medium text-primary">View history →</a></div><RunTable Runs="@data.Runs.Take(4).ToArray()" /></section>
+        <section class="panel p-5"><div class="flex items-center gap-2"><Icon Name="clock" Class="text-primary" /><h2>Sync schedule</h2></div><p class="mt-5 font-mono text-lg font-semibold">@(settings?.Settings.ScheduleCron ?? "Not configured")</p><p class="mt-2 text-xs text-muted-foreground">UTC · Five-field cron</p><div class="mt-5 border-t border-border pt-4"><p class="eyebrow">Eligibility status</p><p class="mt-2 text-sm font-medium">@(settings?.Settings.EligibleStatusId > 0 ? $"Status ID {settings.Settings.EligibleStatusId}" : "TBD · Not configured")</p><p class="mt-3 text-[11px] leading-5 text-muted-foreground">Only eligible cases create new intakes. Existing deliveries continue through recovery.</p></div><a class="btn-secondary mt-5 w-full" href="/configuration">Manage configuration<Icon Name="arrow" Class="size-3.5" /></a></section>
+    </div>
+    <section class="panel overflow-hidden"><div class="flex flex-wrap items-center justify-between gap-3 p-5"><div><h2>Case deliveries</h2><p class="mt-1 text-[11px] text-muted-foreground">Latest 100 case outcomes · Protected values stay hidden</p></div><div class="flex items-center gap-2"><label for="status-filter" class="sr-only">Filter deliveries</label><select id="status-filter" class="form-input mt-0 w-40" @bind="filter"><option value="">All statuses</option><option>Created</option><option>UpdateRequired</option><option>RetryRequired</option><option>Discovered</option><option>IdentityConflict</option></select><button class="btn-secondary" disabled="@loading" @onclick="Load"><Icon Name="refresh" />Refresh</button></div></div>
+        @if (!Filtered.Any()) { <p class="p-8 text-center text-sm text-muted-foreground">No deliveries match this view.</p> }
+        else { <div class="table-wrap"><table class="data-table"><thead><tr><th>Source case</th><th>Intake outcome</th><th>Documents</th><th>Last activity (UTC)</th><th>Details</th></tr></thead><tbody>@foreach (var row in Filtered) { <tr><td class="font-mono font-medium">SA · @row.SourceCaseId</td><td><StatusBadge Text="@row.Status" /></td><td>@row.DeliveredCount / @row.DocumentCount delivered</td><td class="font-mono text-[11px] text-muted-foreground">@row.UpdatedAtUtc.ToString("MMM dd, HH:mm")</td><td><button class="text-primary hover:underline" aria-label="@($"Inspect case {row.SourceCaseId}")" @onclick="() => selected = row">Inspect →</button></td></tr> }</tbody></table></div> }
+    </section>
+    @if (selected != null) { <section class="panel mt-5 p-5" aria-label="Delivery details"><div class="flex justify-between"><h2>Delivery details · SA @selected.SourceCaseId</h2><button class="btn-ghost" @onclick="() => selected = null">Close</button></div><p class="mt-3 text-xs leading-6 text-muted-foreground">@selected.DeliveredCount of @selected.DocumentCount documents acknowledged. Preview the case by its exact SmartAdvocate case number to inspect mapped values.</p>@foreach (var code in selected.ErrorCodes) { <p class="mt-2 break-all font-mono text-xs text-destructive">@(code)</p> }</section> }
+}
+@code {
+    private OperationsDashboard? data; private SettingsSnapshot? settings; private bool loading = true; private string? error; private string filter = ""; private DeliverySummary? selected;
+    private IEnumerable<DeliverySummary> Filtered => data?.Deliveries.Where(d => filter == "" || d.Status == filter) ?? [];
+    private (string Label, int Value, string Note, string Tone, string Icon)[] Metrics => [ ("Tracked cases", data!.TotalCases, "Across this sync workspace", "metric-indigo", "sync"), ("Intakes acknowledged", data.CreatedCases, "Current Created outcomes", "metric-emerald", "check"), ("Needs attention", data.AttentionCases, "Review corrections or recovery", "metric-rose", "alert"), ("Pending intakes", data.PendingCases, "Discovered or submitting", "metric-amber", "clock") ];
+    protected override Task OnInitializedAsync() => Load();
+    private async Task Load() { loading = true; error = null; try { data = await Service.Dashboard(); settings = await Service.Settings(); } catch (UiOperationException e) { error = e.Message; } finally { loading = false; } }
+}

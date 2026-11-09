@@ -1,0 +1,18 @@
+{
+  "subscriptionId": "f180d56c-6007-4ca5-ad78-bf0765f5d6eb",
+  "tenantId": "36e4d61d-ea81-465c-bc28-dcb1302d8d46",
+  "resourceGroup": "briefcase-sync-development",
+  "location": "southcentralus",
+  "sharedResourceGroup": "caseworks-development",
+  "sqlServer": "caseworksdevsql001",
+  "database": "briefcase-sync-development",
+  "registry": "caseworksdevacr000",
+  "vault": "angdevkeyvault",
+  "webClientId": "98a85a68-7e00-4f7a-8837-efd49fa32267",
+  "deploymentClientId": "098660c7-9d66-482e-a1b6-10831bdc77c3",
+  "workerImage": "caseworksdevacr000.azurecr.io/briefcase-sync/worker@sha256:63e3df3b0a062a77a4b130f286d086e130f740d3cf52589721bf3bf73d2e18c9",
+  "webImage": "caseworksdevacr000.azurecr.io/briefcase-sync/web@sha256:dd507613adf9cac6d21150883191da43841e02fe74bca66741564ddd1faa79cc",
+  "sourceApiUrl": "https://cwapps.n8protect.com/Development/VendorSmartAdvocate/",
+  "destinationApiUrl": "https://fbtrial.my.salesforce.com/",
+  "syncScope": "smartadvocate-development-to-briefcase-fbtrial"
+}

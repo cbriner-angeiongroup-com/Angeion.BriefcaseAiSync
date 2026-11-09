@@ -1,0 +1,24 @@
+FROM node:22.21.0-bookworm-slim AS styles
+WORKDIR /web
+COPY src/BriefcaseSync.Web/package*.json ./
+RUN npm ci
+COPY src/BriefcaseSync.Web/Styles/ Styles/
+COPY src/BriefcaseSync.Web/Components/ Components/
+RUN npm run build:css
+
+FROM mcr.microsoft.com/dotnet/sdk:10.0.301 AS build
+WORKDIR /source
+COPY global.json Directory.Build.props ./
+COPY src/ src/
+COPY config/ config/
+COPY --from=styles /web/wwwroot/app.css src/BriefcaseSync.Web/wwwroot/app.css
+RUN dotnet restore src/BriefcaseSync.Web --locked-mode
+RUN dotnet publish src/BriefcaseSync.Web -c Release --no-restore -o /app /p:UseAppHost=false
+
+FROM mcr.microsoft.com/dotnet/aspnet:10.0.14
+WORKDIR /app
+COPY --from=build /app ./
+USER $APP_UID
+ENV ASPNETCORE_HTTP_PORTS=8080
+EXPOSE 8080
+ENTRYPOINT ["dotnet", "BriefcaseSync.Web.dll"]

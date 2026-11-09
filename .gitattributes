@@ -1,0 +1,2 @@
+# Preserve the pinned design-system reference byte-for-byte across platforms.
+src/BriefcaseSync.Web/Styles/reference/** -text whitespace=cr-at-eol

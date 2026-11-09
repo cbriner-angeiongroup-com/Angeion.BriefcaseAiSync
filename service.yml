@@ -1,0 +1,33 @@
+schema_version: 1
+name: briefcase-sync
+kind: application
+description: Sends eligible SmartAdvocate intakes and signed retainers to a BriefCase AI tenant using Tiger Lead ID as the external key.
+domain: vendor-integration
+owner:
+  team: REPLACE_WITH_CATALOG_TEAM
+repository:
+  url: https://github.com/cbriner-angeiongroup-com/Angeion.BriefcaseAiSync
+lifecycle: development
+architecture_status: experimental
+capabilities: [vendor-integration]
+owns:
+  entities: [SyncDelivery, LeadIdentityBinding, RetainerUploadSession, SyncRun, RuntimeConfiguration, AccessAudit]
+does_not_own: [Case, Contact, Intake, authentication]
+responsibilities:
+  - Discover eligible cases by configured SmartAdvocate status.
+  - Validate and persist intake and retainer delivery intent and outcomes.
+  - Preserve Tiger Lead ID correlation and reconcile uncertain uploads.
+  - Provide authorized operational views, audited read-only previews and versioned runtime configuration.
+non_responsibilities:
+  - Provision SmartAdvocate UDF definitions.
+  - Own canonical cases or contacts.
+  - Read or update BriefCase AI intakes through undocumented endpoints.
+dependencies: []
+interfaces:
+  apis: []
+  events:
+    publishes: []
+    consumes: []
+external_systems: [smartadvocate, briefcase-ai]
+# The catalog currently has no registries/validator/publisher. Resolve identifiers and owner/repository
+# placeholders during registration; these are proposed metadata, not claims of catalog registration.

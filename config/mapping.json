@@ -1,0 +1,765 @@
+{
+  "SmartAdvocate": {
+    "EligibleStatusId": 32409,
+    "TestTrigger": {
+      "Enabled": false,
+      "MainStatusId": 3886,
+      "SourceCaseId": 0
+    },
+    "EmergencyPhoneLabelPrefix": "EC:",
+    "GenderValues": {
+      "0": "Female",
+      "1": "Male"
+    },
+    "MaritalStatusValues": {
+      "1": "Married"
+    },
+    "PersonRoles": {
+      "26411": "Client"
+    }
+  },
+  "Mapping": {
+    "MappingVersion": "farrar-ball-smartadvocate-production-unapproved-9",
+    "LeadVendorIdUdfPath": "Case Incident/LAW-TRIGERS-ID",
+    "Mappings": [
+      {
+        "InventoryId": "FB-U002",
+        "StandardProperty": "PrimaryContactNameFirst",
+        "Destination": "clientFirstName",
+        "Required": true
+      },
+      {
+        "InventoryId": "FB-U003",
+        "StandardProperty": "PrimaryContactNameLast",
+        "Destination": "clientLastName",
+        "Required": true
+      },
+      {
+        "InventoryId": "FB-U004",
+        "StandardProperty": "PrimaryContactEmailAddress",
+        "Destination": "clientEmail"
+      },
+      {
+        "InventoryId": "FB-U005",
+        "StandardProperty": "PrimaryContactPhoneNumber",
+        "Destination": "clientPhone"
+      },
+      {
+        "InventoryId": "FB-U006",
+        "SourceField": "PrimaryContactMobilePhone",
+        "Destination": "clientMobilePhone"
+      },
+      {
+        "InventoryId": "FB-U007",
+        "StandardProperty": "PrimaryContactBirthDate",
+        "Destination": "clientDateOfBirth"
+      },
+      {
+        "InventoryId": "FB-U008",
+        "StandardProperty": "PrimaryContactGender",
+        "Destination": "clientGender"
+      },
+      {
+        "InventoryId": "FB-U009",
+        "SourceField": "PrimaryContactMaritalStatus",
+        "Destination": "clientMaritalStatus"
+      },
+      {
+        "InventoryId": "FB-U010",
+        "SourceField": "PrimaryContactMaidenName",
+        "Destination": "clientMaidenName"
+      },
+      {
+        "InventoryId": "FB-U011",
+        "SourceField": "PrimaryContactSpouseName",
+        "Destination": "clientSpouseName"
+      },
+      {
+        "InventoryId": "FB-U012",
+        "SourceField": "PrimaryContactLanguages",
+        "Destination": "clientLanguagesSpoken"
+      },
+      {
+        "InventoryId": "FB-U013",
+        "SourceField": "PrimaryContactDriversLicenseNumber",
+        "Destination": "clientDriversLicenseNumber"
+      },
+      {
+        "InventoryId": "FB-U014",
+        "StandardProperty": "PrimaryContactSocialSecurityNumber",
+        "Destination": "clientSocialSecurityNumber"
+      },
+      {
+        "InventoryId": "FB-U015",
+        "StandardProperty": "PrimaryContactAddressLine1",
+        "Destination": "clientBillingStreet"
+      },
+      {
+        "InventoryId": "FB-U016",
+        "StandardProperty": "PrimaryContactAddressCity",
+        "Destination": "clientBillingCity"
+      },
+      {
+        "InventoryId": "FB-U017",
+        "StandardProperty": "PrimaryContactAddressStateCode",
+        "Destination": "clientBillingState"
+      },
+      {
+        "InventoryId": "FB-U018",
+        "StandardProperty": "PrimaryContactAddressZipCode",
+        "Destination": "clientBillingPostalCode"
+      },
+      {
+        "InventoryId": "FB-U019",
+        "StandardProperty": "PrimaryContactAddressCountryName",
+        "Destination": "clientBillingCountry"
+      },
+      {
+        "InventoryId": "FB-U020",
+        "SourceField": "PrimaryContactEmergencyContact",
+        "Destination": "clientEmergencyContact"
+      },
+      {
+        "InventoryId": "FB-U021",
+        "SourceField": "PrimaryContactEmergencyPhone",
+        "Destination": "clientEmergencyPhone"
+      },
+      {
+        "InventoryId": "FB-U022",
+        "SourceField": "PrimaryContactSmsOptOut",
+        "Destination": "clientSmsOptOut"
+      },
+      {
+        "Destination": "notes",
+        "JoinWith": "\n\n",
+        "Parts": [
+          {
+            "SourceField": "PrimaryContactMiddleName",
+            "Label": "Primary contact middle name"
+          },
+          {
+            "InventoryId": "FB-U023",
+            "SourceField": "PrimaryContactSubcategory",
+            "Label": "Primary contact subcategory (minor status source)"
+          },
+          {
+            "InventoryId": "FB-U024",
+            "SourceField": "PrimaryContactDeceased",
+            "Label": "Primary contact deceased"
+          },
+          {
+            "InventoryId": "FB-U034",
+            "UdfPath": "Case Incident/GEN-ACCIDENT-SUMMARY",
+            "Label": "Incident summary"
+          },
+          {
+            "InventoryId": "FB-U028",
+            "UdfPath": "Case Incident/PLAINTIFF-DETAILS",
+            "Label": "Plaintiff details"
+          },
+          {
+            "InventoryId": "FB-U035",
+            "UdfPath": "Case Incident/GEN-ACCIDENT-HITNRUN",
+            "Values": {
+              "Yes": "Yes",
+              "No": "No"
+            },
+            "Label": "Was this a hit & run accident?"
+          },
+          {
+            "InventoryId": "FB-U063",
+            "UdfPath": "Case Incident/INSURANCE-COVERAGE",
+            "Values": {
+              "Yes": "Yes",
+              "No": "No"
+            },
+            "Label": "Client auto insurance / Were you insured at the time of this accident?"
+          },
+          {
+            "InventoryId": "FB-U064",
+            "UdfPath": "Case Incident/INSURANCE-PROVIDER",
+            "WhenAll": [
+              {
+                "UdfPath": "Case Incident/INSURANCE-COVERAGE",
+                "EqualsValue": "Yes"
+              }
+            ],
+            "Label": "Client auto insurance / What is the name of your insurance carrier?"
+          },
+          {
+            "InventoryId": "FB-U065",
+            "UdfPath": "Case Incident/INSURANCE-POLICY-NO",
+            "WhenAll": [
+              {
+                "UdfPath": "Case Incident/INSURANCE-COVERAGE",
+                "EqualsValue": "Yes"
+              }
+            ],
+            "Label": "Client auto insurance / What is your policy number?"
+          },
+          {
+            "InventoryId": "FB-U066",
+            "UdfPath": "Case Incident/INSURANCE-CLAIM-FILED",
+            "Values": {
+              "Yes": "Yes",
+              "No": "No"
+            },
+            "WhenAll": [
+              {
+                "UdfPath": "Case Incident/INSURANCE-COVERAGE",
+                "EqualsValue": "Yes"
+              }
+            ],
+            "Label": "Client auto insurance / Have you filed an insurance claim with your carrier?"
+          },
+          {
+            "InventoryId": "FB-U067",
+            "UdfPath": "Case Incident/INSURANCE-CLAIM-NO",
+            "WhenAll": [
+              {
+                "UdfPath": "Case Incident/INSURANCE-COVERAGE",
+                "EqualsValue": "Yes"
+              },
+              {
+                "UdfPath": "Case Incident/INSURANCE-CLAIM-FILED",
+                "EqualsValue": "Yes"
+              }
+            ],
+            "Label": "Client auto insurance / What is the claim number?"
+          },
+          {
+            "InventoryId": "FB-U068",
+            "UdfPath": "Case Incident/INSURANCE-COVERAGE-DETAILS",
+            "Values": {
+              "Yes": "Yes",
+              "No": "No"
+            },
+            "Label": "Client auto insurance / Do you have uninsured or underinsured insurance  coverage?"
+          },
+          {
+            "InventoryId": "FB-U087",
+            "UdfPath": "Case Incident/PRIOR-REP",
+            "Values": {
+              "Yes": "Yes",
+              "No": "No"
+            },
+            "Label": "Have you been represented by another lawyer in connection with this claim?"
+          }
+        ]
+      },
+      {
+        "InventoryId": "FB-U027",
+        "UdfPath": "Case Incident/PNC-RESIDENCY",
+        "Values": {
+          "Yes": "Yes",
+          "No": "No"
+        },
+        "Destination": "clientNonUsAddress"
+      },
+      {
+        "InventoryId": "FB-U030",
+        "StandardProperty": "CaseType",
+        "Values": {
+          "MVA-FB-SE": "Automobile Accident"
+        },
+        "Destination": "caseType",
+        "Required": true
+      },
+      {
+        "InventoryId": "FB-U031",
+        "UdfPath": "Case Incident/GEN-ACCIDENT-STATE",
+        "Destination": "caseState"
+      },
+      {
+        "InventoryId": "FB-U032",
+        "Destination": "incidentDate",
+        "UdfPath": "Case Incident/GEN-ACCIDENT-DATE"
+      },
+      {
+        "InventoryId": "FB-U033",
+        "UdfPath": "Case Incident/GEN-ACCIDENT-DATE-EXACT",
+        "Values": {
+          "Exact": "No",
+          "Approximate": "Yes"
+        },
+        "Destination": "incidentDateNotExact"
+      },
+      {
+        "Destination": "accidentPoliceReport",
+        "JoinWith": "\n\n",
+        "Parts": [
+          {
+            "InventoryId": "FB-U037",
+            "UdfPath": "Case Incident/POLICE-ON-SCENE",
+            "Values": {
+              "Yes": "Yes",
+              "No": "No"
+            },
+            "Label": "Did the police arrive on scene?"
+          },
+          {
+            "InventoryId": "FB-U038",
+            "UdfPath": "Case Incident/POLICE-REPORT",
+            "Values": {
+              "Yes": "Yes",
+              "No": "No"
+            },
+            "Label": "Was a police report created?"
+          },
+          {
+            "InventoryId": "FB-U039",
+            "UdfPath": "Case Incident/POLICE-CITATIONS",
+            "Values": {
+              "Yes": "Yes",
+              "No": "No"
+            },
+            "Label": "Did you receive any citations related to the accident?"
+          },
+          {
+            "InventoryId": "FB-U040",
+            "UdfPath": "Case Incident/POLICE-CITATION-RECIPIENT",
+            "Values": {
+              "Yes": "Yes",
+              "No": "No"
+            },
+            "Label": "Was anyone else cited for the accident?"
+          },
+          {
+            "InventoryId": "FB-U041",
+            "UdfPath": "Case Incident/POLICE-CITATION-RECIPIENT-DETAILS",
+            "WhenAll": [
+              {
+                "UdfPath": "Case Incident/POLICE-CITATION-RECIPIENT",
+                "EqualsValue": "Yes"
+              }
+            ],
+            "Label": "Who was cited for the accident? (Name & Role in the Accident)"
+          }
+        ]
+      },
+      {
+        "Destination": "witnessesInformation",
+        "JoinWith": "\n\n",
+        "Parts": [
+          {
+            "InventoryId": "FB-U043",
+            "UdfPath": "Case Incident/WITNESSES",
+            "Values": {
+              "Yes": "Yes",
+              "No": "No"
+            },
+            "Label": "Were there any witnesses to the accident?"
+          },
+          {
+            "InventoryId": "FB-U044",
+            "UdfPath": "Case Incident/WITNESSES-DETAILS",
+            "WhenAll": [
+              {
+                "UdfPath": "Case Incident/WITNESSES",
+                "EqualsValue": "Yes"
+              }
+            ],
+            "Label": "Who witnessed the accident? (Name & Any Details Available)"
+          },
+          {
+            "InventoryId": "FB-U045",
+            "UdfPath": "Case Incident/WITNESSES-CONTACT",
+            "WhenAll": [
+              {
+                "UdfPath": "Case Incident/WITNESSES",
+                "EqualsValue": "Yes"
+              }
+            ],
+            "Label": "Do you have any contact information for the witness(es)?"
+          }
+        ]
+      },
+      {
+        "Destination": "ambulanceInformation",
+        "JoinWith": "\n\n",
+        "Parts": [
+          {
+            "InventoryId": "FB-U047",
+            "UdfPath": "Case Incident/EMS-ON-SCENE",
+            "Values": {
+              "Yes": "Yes",
+              "No": "No"
+            },
+            "Label": "Did an ambulance arrive on scene?"
+          },
+          {
+            "InventoryId": "FB-U048",
+            "UdfPath": "Case Incident/EMS-TREATMENT",
+            "Values": {
+              "Yes": "Yes",
+              "No": "No"
+            },
+            "WhenAll": [
+              {
+                "UdfPath": "Case Incident/EMS-ON-SCENE",
+                "EqualsValue": "Yes"
+              }
+            ],
+            "Label": "Did EMS treat you at the scene of the accident?"
+          },
+          {
+            "InventoryId": "FB-U049",
+            "UdfPath": "Case Incident/EMS-TRANSPORT",
+            "Values": {
+              "Yes": "Yes",
+              "No": "No"
+            },
+            "WhenAll": [
+              {
+                "UdfPath": "Case Incident/EMS-ON-SCENE",
+                "EqualsValue": "Yes"
+              }
+            ],
+            "Label": "Were you transported in the ambulance?"
+          },
+          {
+            "InventoryId": "FB-U050",
+            "UdfPath": "Case Incident/EMS-TRANSPORT-FACILITY",
+            "WhenAll": [
+              {
+                "UdfPath": "Case Incident/EMS-ON-SCENE",
+                "EqualsValue": "Yes"
+              },
+              {
+                "UdfPath": "Case Incident/EMS-TRANSPORT",
+                "EqualsValue": "Yes"
+              }
+            ],
+            "Label": "What is the name of the hospital or facility the ambulance transported you to?"
+          }
+        ]
+      },
+      {
+        "InventoryId": "FB-U052",
+        "UdfPath": "Case Incident/INJURY",
+        "Values": {
+          "Yes": "Yes",
+          "No": "No"
+        },
+        "Destination": "injured"
+      },
+      {
+        "Destination": "injuryDescription",
+        "JoinWith": "\n\n",
+        "Parts": [
+          {
+            "InventoryId": "FB-U053",
+            "UdfPath": "Case Incident/INJURY-DETAILS",
+            "WhenAll": [
+              {
+                "UdfPath": "Case Incident/INJURY",
+                "EqualsValue": "Yes"
+              }
+            ],
+            "Label": "What injuries did you suffer in the accident?"
+          },
+          {
+            "InventoryId": "FB-U054",
+            "UdfPath": "Case Incident/INJURY-HEAD",
+            "Values": {
+              "Yes": "Yes",
+              "No": "No"
+            },
+            "WhenAll": [
+              {
+                "UdfPath": "Case Incident/INJURY",
+                "EqualsValue": "Yes"
+              }
+            ],
+            "Label": "Did you suffer from a head injury in the accident?"
+          },
+          {
+            "InventoryId": "FB-U055",
+            "UdfPath": "Case Incident/INJURY-HEAD-DETAILS",
+            "WhenAll": [
+              {
+                "UdfPath": "Case Incident/INJURY",
+                "EqualsValue": "Yes"
+              },
+              {
+                "UdfPath": "Case Incident/INJURY-HEAD",
+                "EqualsValue": "Yes"
+              }
+            ],
+            "Label": "What type of head injury did you suffer?"
+          },
+          {
+            "InventoryId": "FB-U056",
+            "UdfPath": "Case Incident/INJURY-CONSCIOUSNESS",
+            "Values": {
+              "Yes": "Yes",
+              "No": "No"
+            },
+            "Label": "Did you ever lose consciousness?"
+          }
+        ]
+      },
+      {
+        "InventoryId": "FB-U057",
+        "UdfPath": "Case Incident/INJURY-TX",
+        "Values": {
+          "Yes": "Yes",
+          "No": "No"
+        },
+        "WhenAll": [
+          {
+            "UdfPath": "Case Incident/INJURY",
+            "EqualsValue": "Yes"
+          }
+        ],
+        "Destination": "treatment"
+      },
+      {
+        "Destination": "currentAccidentTreatment",
+        "JoinWith": "\n\n",
+        "Parts": [
+          {
+            "InventoryId": "FB-U058",
+            "UdfPath": "Case Incident/INJURY-TX-FUTURE",
+            "Values": {
+              "Yes": "Yes",
+              "No": "No"
+            },
+            "WhenAll": [
+              {
+                "UdfPath": "Case Incident/INJURY",
+                "EqualsValue": "Yes"
+              },
+              {
+                "UdfPath": "Case Incident/INJURY-TX",
+                "EqualsValue": "No"
+              }
+            ],
+            "Label": "If you have not sought treatment, are you open to treating in the future?"
+          },
+          {
+            "InventoryId": "FB-U059",
+            "UdfPath": "Case Incident/INJURY-MED-VISIT",
+            "Values": {
+              "Yes": "Yes",
+              "No": "No"
+            },
+            "WhenAll": [
+              {
+                "UdfPath": "Case Incident/INJURY",
+                "EqualsValue": "Yes"
+              }
+            ],
+            "Label": "Have you visited a medical professional for your injuries?"
+          },
+          {
+            "InventoryId": "FB-U060",
+            "UdfPath": "Case Incident/INJURY-MED-VISIT-DATE",
+            "WhenAll": [
+              {
+                "UdfPath": "Case Incident/INJURY",
+                "EqualsValue": "Yes"
+              },
+              {
+                "UdfPath": "Case Incident/INJURY-MED-VISIT",
+                "EqualsValue": "Yes"
+              }
+            ],
+            "Label": "When did you visit a medical professional for your injuries?"
+          },
+          {
+            "InventoryId": "FB-U061",
+            "UdfPath": "Case Incident/INJURY-MED-VISIT-FACILITIES",
+            "WhenAll": [
+              {
+                "UdfPath": "Case Incident/INJURY",
+                "EqualsValue": "Yes"
+              },
+              {
+                "UdfPath": "Case Incident/INJURY-MED-VISIT",
+                "EqualsValue": "Yes"
+              }
+            ],
+            "Label": "At what facility(ies) did you visit a medical professional for your injuries? (Name & Address)"
+          }
+        ]
+      },
+      {
+        "Destination": "plaintiffHealthInsuranceInfo",
+        "JoinWith": "\n\n",
+        "Parts": [
+          {
+            "InventoryId": "FB-U069",
+            "UdfPath": "Case Incident/INSURANCE-HEALTH",
+            "Values": {
+              "Yes": "Yes",
+              "No": "No"
+            },
+            "Label": "Do you have health insurance?"
+          }
+        ]
+      },
+      {
+        "Destination": "vehicleInformation",
+        "JoinWith": "\n\n",
+        "Parts": [
+          {
+            "InventoryId": "FB-U071",
+            "UdfPath": "Case Incident/VEHICLE-DETAILS",
+            "Label": "Could you provide me with the details of your vehicle involved in the accident? (Model Year, Make, Model, Bodystyle)"
+          },
+          {
+            "InventoryId": "FB-U072",
+            "UdfPath": "Case Incident/VEHICLE-DAMAGE",
+            "Values": {
+              "Yes": "Yes",
+              "No": "No"
+            },
+            "Label": "Was your vehicle damaged?"
+          },
+          {
+            "InventoryId": "FB-U073",
+            "UdfPath": "Case Incident/VEHICLE-DAMAGE-DETAILS",
+            "WhenAll": [
+              {
+                "UdfPath": "Case Incident/VEHICLE-DAMAGE",
+                "EqualsValue": "Yes"
+              }
+            ],
+            "Label": "Could you describe the location and severity of the damage to your vehicle?"
+          },
+          {
+            "InventoryId": "FB-U074",
+            "UdfPath": "Case Incident/VEHICLE-TOWING",
+            "Values": {
+              "Yes": "Yes",
+              "No": "No"
+            },
+            "Label": "Was your vehicle towed?"
+          },
+          {
+            "InventoryId": "FB-U075",
+            "UdfPath": "Case Incident/VEHICLE-HELMET",
+            "Values": {
+              "Yes": "Yes",
+              "No": "No"
+            },
+            "WhenAll": [
+              {
+                "UdfPath": "REPLACE_WITH_VERIFIED_SCREEN/MotorcycleApplicability",
+                "EqualsValue": "Yes"
+              }
+            ],
+            "Label": "[MOTORCYCLE ACCIDENTS ONLY] Were you wearing a helmet?",
+            "Enabled": false,
+            "DisabledReason": "Motorcycle applicability is not verified. Helmet answer is excluded until its source condition is verified."
+          }
+        ]
+      },
+      {
+        "Destination": "defendantInformation",
+        "JoinWith": "\n\n",
+        "Parts": [
+          {
+            "InventoryId": "FB-U077",
+            "UdfPath": "Case Incident/FAULT-PARTY",
+            "Label": "At-fault party / What is the name of the at-fault party?"
+          },
+          {
+            "InventoryId": "FB-U078",
+            "UdfPath": "Case Incident/FAULT-VEHICLE",
+            "Label": "At-fault party / Could you provide me with the details of their vehicle? (Model Year, Make, Model, Bodystyle)"
+          },
+          {
+            "InventoryId": "FB-U079",
+            "UdfPath": "Case Incident/FAULT-DAMAGE",
+            "Values": {
+              "Yes": "Yes",
+              "No": "No"
+            },
+            "Label": "At-fault party / Was their vehicle damaged?"
+          },
+          {
+            "InventoryId": "FB-U080",
+            "UdfPath": "Case Incident/FAULT-DAMAGE-DETAILS",
+            "WhenAll": [
+              {
+                "UdfPath": "Case Incident/FAULT-DAMAGE",
+                "EqualsValue": "Yes"
+              }
+            ],
+            "Label": "At-fault party / Could you describe the location and severity of the damage to their vehicle?"
+          },
+          {
+            "InventoryId": "FB-U081",
+            "UdfPath": "Case Incident/FAULT-INSURED",
+            "Values": {
+              "Yes": "Yes",
+              "No": "No"
+            },
+            "Label": "At-fault party / Was the at-fault party insured?"
+          },
+          {
+            "InventoryId": "FB-U082",
+            "UdfPath": "Case Incident/FAULT-INSURANCE-CARRIER",
+            "WhenAll": [
+              {
+                "UdfPath": "Case Incident/FAULT-INSURED",
+                "EqualsValue": "Yes"
+              }
+            ],
+            "Label": "At-fault party / What is the name of the at-fault party's insurance carrier?"
+          },
+          {
+            "InventoryId": "FB-U083",
+            "UdfPath": "Case Incident/FAULT-INSURANCE-POLICY",
+            "WhenAll": [
+              {
+                "UdfPath": "Case Incident/FAULT-INSURED",
+                "EqualsValue": "Yes"
+              }
+            ],
+            "Label": "At-fault party / What is the at-fault party's insurance policy number?"
+          },
+          {
+            "InventoryId": "FB-U084",
+            "UdfPath": "Case Incident/FAULT-INSURANCE-CLAIM",
+            "Values": {
+              "Yes": "Yes",
+              "No": "No"
+            },
+            "WhenAll": [
+              {
+                "UdfPath": "Case Incident/FAULT-INSURED",
+                "EqualsValue": "Yes"
+              }
+            ],
+            "Label": "At-fault party / Have you filed a claim with the at-fault party's insurance carrier?"
+          },
+          {
+            "InventoryId": "FB-U085",
+            "UdfPath": "Case Incident/FAULT-INSURANCE-CLAIM-NO",
+            "WhenAll": [
+              {
+                "UdfPath": "Case Incident/FAULT-INSURED",
+                "EqualsValue": "Yes"
+              },
+              {
+                "UdfPath": "Case Incident/FAULT-INSURANCE-CLAIM",
+                "EqualsValue": "Yes"
+              }
+            ],
+            "Label": "At-fault party / What is the claim number?"
+          }
+        ]
+      },
+      {
+        "InventoryId": "FB-U088",
+        "UdfPath": "Case Incident/PRIOR-ACCIDENTS",
+        "Destination": "priorMvas"
+      }
+    ],
+    "DescriptionEnabled": true,
+    "DescriptionContractVerified": true
+  }
+}

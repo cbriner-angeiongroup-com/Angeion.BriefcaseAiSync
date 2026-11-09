@@ -1,0 +1,10 @@
+<span class="status @Tone">@Text</span>
+@code {
+    [Parameter] public string Text { get; set; } = "";
+    private string Tone => Text switch {
+        "Created" or "Completed" or "Already synced" or "Included" or "Delivered" => "status-complete",
+        "Running" or "Create intake" or "Retry frozen intake" => "status-processing",
+        "Discovered" or "Paused" or "Omitted" or "Dry run" or "Pending" => "status-ready",
+        _ => "status-attention"
+    };
+}

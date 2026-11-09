@@ -1,0 +1,44 @@
+@inherits LayoutComponentBase
+@inject OperationsService Service
+@inject IJSRuntime JS
+<a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:z-50 focus:bg-card focus:p-4">Skip to content</a>
+<div class="min-h-screen bg-background text-foreground @(comfortable ? "density-comfortable" : "density-compact")">
+    <aside class="fixed inset-y-0 left-0 z-40 w-[248px] border-r border-sidebar-border bg-sidebar text-sidebar-foreground @(menuOpen ? "flex" : "hidden") flex-col lg:flex" aria-label="Application sidebar">
+        <a href="/" class="flex h-18 items-center gap-3 border-b border-sidebar-border px-5">
+            <span class="grid size-9 place-items-center rounded-lg bg-sidebar-foreground text-sm font-bold tracking-tight text-sidebar">ag</span>
+            <span><span class="block text-[13px] font-semibold">Angeion</span><span class="mt-1 block text-[9px] uppercase tracking-[.17em] text-sidebar-foreground/50">Integration workspace</span></span>
+        </a>
+        <div class="px-5 pb-3 pt-7"><p class="text-[10px] font-semibold uppercase tracking-[.15em] text-sidebar-foreground/40">Briefcase Sync</p></div>
+        <nav class="space-y-1 px-3" aria-label="Primary navigation" @onclick="() => menuOpen = false">
+            <NavLink class="nav-item" href="/" Match="NavLinkMatch.All"><Icon Name="grid" />Overview</NavLink>
+            <NavLink class="nav-item" href="/preview"><Icon Name="eye" />Preview a case</NavLink>
+            <NavLink class="nav-item" href="/runs"><Icon Name="clock" />Sync history</NavLink>
+            <NavLink class="nav-item" href="/configuration"><Icon Name="settings" />Configuration</NavLink>
+        </nav>
+        <div class="mx-4 mt-auto rounded-lg border border-sidebar-border bg-sidebar-accent/40 p-3.5">
+            <div class="flex items-center gap-2 text-xs font-medium"><Icon Name="lock" Class="size-3.5" />Outbound integration</div>
+            <p class="mt-2 text-[11px] leading-5 text-sidebar-foreground/50">SmartAdvocate → BriefCase AI<br />Linked by Tiger Lead ID</p>
+        </div>
+        <div class="flex items-center gap-3 px-5 py-5"><span class="grid size-8 place-items-center rounded-full bg-sidebar-accent text-[10px] font-semibold">AG</span><div><p class="text-[11px] font-medium">@(Service.IsDemo || Service.IsLocalPreview ? "Development workspace" : "Authorized workspace")</p><p class="mt-1 text-[10px] text-sidebar-foreground/45">@(Service.IsDemo ? "Synthetic data only" : Service.IsLocalPreview ? "Local developer access" : "Microsoft Entra ID")</p></div></div>
+    </aside>
+    @if (menuOpen) { <button class="fixed inset-0 z-30 bg-sidebar/50 lg:hidden" aria-label="Close navigation" @onclick="() => menuOpen = false"></button> }
+    <div class="lg:pl-[248px]">
+        <header class="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-border bg-background/95 px-4 backdrop-blur sm:px-7">
+            <button class="btn-ghost px-2 lg:hidden" aria-label="Open navigation" aria-expanded="@(menuOpen ? "true" : "false")" @onclick="() => menuOpen = !menuOpen"><Icon Name="menu" /></button>
+            <span class="hidden text-xs text-muted-foreground sm:inline">Workspace</span><span class="hidden text-border sm:inline">/</span><span class="text-xs font-medium">Briefcase Sync</span>
+            <span class="ml-auto rounded-md border border-border bg-card px-2 py-1 font-mono text-[10px] text-muted-foreground">@(Service.IsDemo ? "SYNTHETIC" : Service.IsLocalPreview ? "SMARTADVOCATE DEV" : "LIVE CONNECTION")</span>
+            <button class="btn-ghost px-2.5" aria-label="Toggle comfortable density" aria-pressed="@(comfortable ? "true" : "false")" @onclick="() => comfortable = !comfortable"><Icon Name="settings" /></button>
+            <button class="btn-ghost px-2.5" aria-label="Toggle dark theme" aria-pressed="@(dark ? "true" : "false")" @onclick="ToggleTheme"><Icon Name="moon" /></button>
+        </header>
+        @if (Service.IsDemo) { <div class="border-b border-border bg-accent/40 px-5 py-2 text-center text-[11px] text-accent-foreground">Synthetic workspace · No live data is loaded or sent. Try case <strong class="font-mono">SA-10428</strong>.</div> }
+        else if (Service.IsLocalPreview) { <div class="border-b border-border bg-accent/40 px-5 py-2 text-center text-[11px] text-accent-foreground">SmartAdvocate development · Preview only · Sending disabled · Access recorded in local SQL. Restart after one hour to renew local access.</div> }
+        <main id="main-content" class="mx-auto max-w-[1500px] px-5 py-8 sm:px-7 lg:px-9">@Body</main>
+        <footer class="mx-5 flex flex-wrap items-center justify-between gap-2 border-t border-border py-5 text-[10px] text-muted-foreground sm:mx-7 lg:mx-9"><span>Angeion · Briefcase Sync</span><span>SmartAdvocate → BriefCase AI · Schedule times UTC</span></footer>
+    </div>
+</div>
+<div id="blazor-error-ui" data-nosnippet role="alert">The connection was interrupted. <a href="/" class="underline">Reload the workspace</a>.</div>
+@code {
+    private bool menuOpen, dark, comfortable;
+    protected override async Task OnAfterRenderAsync(bool firstRender) { if (firstRender) { var restored = await JS.InvokeAsync<bool>("briefcaseTheme.restore"); if (dark != restored) { dark = restored; StateHasChanged(); } } }
+    private async Task ToggleTheme() { dark = !dark; await JS.InvokeVoidAsync("briefcaseTheme.set", dark); }
+}

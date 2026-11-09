@@ -1,0 +1,5 @@
+@if (!string.IsNullOrEmpty(Message))
+{
+    <div class="notice mb-5 @(Error ? "text-destructive" : "text-foreground")" role="@(Error ? "alert" : "status")"><Icon Name="@(Error ? "alert" : "check")" Class="mt-0.5 shrink-0" /><span>@Message</span></div>
+}
+@code { [Parameter] public string? Message { get; set; } [Parameter] public bool Error { get; set; } }

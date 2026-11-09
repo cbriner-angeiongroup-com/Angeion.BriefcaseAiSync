@@ -1,0 +1,17 @@
+**/bin/
+**/obj/
+.scratch/
+artifacts/
+TestResults/
+.vs/
+.idea/
+appsettings.Local.json
+*.user
+*.publish.xml
+*.env
+**/node_modules/
+**/playwright-report/
+**/test-results/
+**/__pycache__/
+/Angeion_Lead_API_Specification.pdf
+/Farrar and Ball UDF Creation and Field Mapping.xlsx

@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><IsPackable>false</IsPackable><IsTestProject>true</IsTestProject></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/BriefcaseSync.Infrastructure/BriefcaseSync.Infrastructure.csproj" />
+    <ProjectReference Include="../../src/BriefcaseSync.Web/BriefcaseSync.Web.csproj" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.3.0" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5" PrivateAssets="all" />
+    <None Include="../../config/mapping.json" Link="config/mapping.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../database/BriefcaseSync.Database/Schema.sql" Link="Schema.sql" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>
