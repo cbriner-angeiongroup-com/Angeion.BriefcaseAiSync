@@ -1,0 +1,33 @@
+name: publish-development-schema
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  id-token: write
+concurrency:
+  group: briefcase-sync-development-deployment
+  cancel-in-progress: false
+jobs:
+  publish-schema:
+    runs-on: ubuntu-latest
+    environment: development
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - name: Install SQL project publisher
+        run: dotnet tool install --global Microsoft.SqlPackage --version 170.4.83
+      - name: Preview, publish and verify BriefcaseSyncDev schema
+        shell: pwsh
+        run: ./eng/Publish-DevelopmentSchema.ps1
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: BriefcaseSyncDev-schema-publication
+          path: artifacts/development-deployment/BriefcaseSyncDev-*

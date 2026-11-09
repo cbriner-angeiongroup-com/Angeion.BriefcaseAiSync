@@ -1,6 +1,6 @@
 -- Run only as the SQL Entra administrator against the new application database.
 -- This is deployment access, never runtime access. No shared server administrator is changed.
-IF DB_NAME() <> N'briefcase-sync-development'
+IF DB_NAME() <> N'BriefcaseSyncDev'
     THROW 51000, 'WRONG_DEVELOPMENT_DATABASE', 1;
 
 IF DATABASE_PRINCIPAL_ID(N'Angeion.BriefcaseAiSync-development-deploy') IS NULL

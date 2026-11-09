@@ -12,7 +12,7 @@ try
 {
     using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(60));
     var token = await new AzureCliCredential().GetTokenAsync(new TokenRequestContext(["https://database.windows.net/.default"]), timeout.Token);
-    await using var connection = new SqlConnection("Server=tcp:caseworksdevsql001.database.windows.net,1433;Initial Catalog=briefcase-sync-development;Encrypt=True;TrustServerCertificate=False;ConnectRetryCount=0;Connect Timeout=15;") { AccessToken = token.Token };
+    await using var connection = new SqlConnection("Server=tcp:caseworksdevsql001.database.windows.net,1433;Initial Catalog=BriefcaseSyncDev;Encrypt=True;TrustServerCertificate=False;ConnectRetryCount=0;Connect Timeout=15;") { AccessToken = token.Token };
     await connection.OpenAsync(timeout.Token);
     await using var command = connection.CreateCommand();
     command.CommandText = """

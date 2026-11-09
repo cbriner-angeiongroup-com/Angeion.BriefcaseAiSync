@@ -5,7 +5,7 @@
   "location": "southcentralus",
   "sharedResourceGroup": "caseworks-development",
   "sqlServer": "caseworksdevsql001",
-  "database": "briefcase-sync-development",
+  "database": "BriefcaseSyncDev",
   "registry": "caseworksdevacr000",
   "vault": "angdevkeyvault",
   "webClientId": "98a85a68-7e00-4f7a-8837-efd49fa32267",
