@@ -67,16 +67,20 @@ Build contexts contained only application source, project/build files and mappin
 - `infra/monitoring.bicep`: disabled failure-alert/action-group definitions using fixed events and aggregate counts only.
 - `eng/Prepare-DevelopmentCloud.py`: idempotent preparation of app-prefixed shared-vault and directory objects; never rotates an existing state key.
 - `eng/Deploy-Development.ps1`: previews each deployment, refuses shared-parent changes/deletions, publishes the DACPAC separately, then deploys pinned hosts with delivery disabled.
+- `eng/Bootstrap-DevelopmentAccess.ps1`: prepared for an authorized subscription administrator to create the group and assign app-group deployment permissions; not executed successfully in this session.
+- `database/authorize-development-publisher.sql`: prepared for the SQL administrator to grant the separate federated publisher access only to this application database; not executed.
 - `eng/AuthorizeDevelopmentSql`: explicit deployment-only SQL grants tool; never linked into runtime hosts.
 - `.github/workflows/deploy-development.yml`: manual OIDC deployment using the `development` GitHub environment.
 
 Resume after access is resolved:
 
 ```powershell
-./eng/Deploy-Development.ps1 -ConfigureWebRedirect -KnownProxyNetworks @('<approved ingress CIDR>')
+./eng/Deploy-Development.ps1 -ConfigureSharedAccess -ConfigureWebRedirect -KnownProxyNetworks @('<approved ingress CIDR>')
 ```
 
 Use an authorized interactive SQL publisher for the first schema/user publication. Later federated deployments also require their own SQL publication permissions. Do not substitute managed-identity runtime permissions for deployment permissions.
+
+The shared-resource access and web redirect options are one-time interactive bootstrap actions. The CI workflow omits both; its federation identity has no shared-group access-administrator or directory-write grants. Normal deployment rights are scoped to the dedicated application group, registry push access, and separately authorized application-database publication.
 
 ## Validation and delivery gates
 

@@ -1,6 +1,7 @@
 param(
     [string]$WorkerImage = '',
     [string]$WebImage = '',
+    [switch]$ConfigureSharedAccess,
     [switch]$ConfigureWebRedirect,
     [string[]]$KnownProxyNetworks = @()
 )
@@ -46,8 +47,12 @@ try {
     $identities = Deploy 'briefcase-sync-development-identities' $settings.resourceGroup 'infra/bootstrap.bicep' @{
         environment = 'development'; location = $settings.location
     }
-    $null = Deploy 'briefcase-sync-development-access' $settings.sharedResourceGroup 'infra/development-access.bicep' @{
-        workerPrincipalId = $identities.runtimePrincipalId.value; webPrincipalId = $identities.webPrincipalId.value
+    if ($ConfigureSharedAccess) {
+        # One-time shared-scope bootstrap by the existing development administrator.
+        # The federated deployment identity is deliberately not a shared-group access administrator.
+        $null = Deploy 'briefcase-sync-development-access' $settings.sharedResourceGroup 'infra/development-access.bicep' @{
+            workerPrincipalId = $identities.runtimePrincipalId.value; webPrincipalId = $identities.webPrincipalId.value
+        }
     }
     # The SQL project is the sole schema publisher. CLI authentication never appears in process arguments.
     & dotnet build database/BriefcaseSync.Database/BriefcaseSync.Database.sqlproj -c Release --nologo
